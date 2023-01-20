@@ -4,18 +4,37 @@
 using namespace std;
 
 struct automobile{
-    string categoria, marca, modello, colore, giorni;
+    string categoria, marca, modello, colore, giorni[7];
 };
+
+void controllo(automobile affitto[], string cat, string gio[])
+{
+    int c = 0;
+
+    ifstream fin(file);
+
+    while(!fin.eof())
+    {
+        fin >> affitto[c].categoria;
+        fin >> affitto[c].marca;
+        fin >> affitto[c].modello;
+        fin >> affitto[c].colore;
+
+        for(int j = 0; j < 7; j++)
+            fin >> affitto[c].giorni[j];
+    }
+
+    fin.close();
+
+}
 
 int menu()
 {
-    automobile affitto;
-
     while(true)
     {
         ifstream fin(file);
 
-        string appoge; int c=0;
+        string appoge, cat, gio[7]; int c=0;
         cout<<"-----------------------------------------------------"<<endl;
         while(!fin.eof())
         {
@@ -27,23 +46,32 @@ int menu()
 
         fin.close();
 
+        automobile affitto[c];
+
         do{
         cout<<"scegli la categoria dell'auto che ti interessa: ";
-        cin>>affitto.categoria;
-        }while(affitto.categoria != "utilitaria" && affitto.categoria != "media" && affitto.categoria != "lusso" && affitto.categoria != "sportiva" && affitto.categoria != "furgone");
+        cin>>cat;
+        }while(cat != "utilitaria" && cat != "media" && cat != "lusso" && cat != "sportiva" && cat != "furgone");
+
+        int cont;
 
         do
         {
             do
             {
                 cout<<"inserisci i giorni in cui vuoi affittare la macchina (0 per uscire): ";
-                cin >> affitto.giorni;
+                cin >> cont;
 
-                if(affitto.giorni >= "8" || affitto.giorni < "0")
+                if(cont >= 8 || cont < 0)
                     cout<<"scelta non valida"<<endl;
+                else gio[cont] = to_string(cont);
 
-            }while(affitto.giorni >= "8" || affitto.giorni < "0");
-        }while(affitto.giorni != "0");
+            }while(cont >= 8 || cont < 0);
+            cont++;
+        }while(cont != 0);
+        cout<<endl;
+
+        controllo(affitto, cat, gio);
     }
 }
 
