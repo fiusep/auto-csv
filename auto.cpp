@@ -64,11 +64,13 @@ int menu()
 
                 if(cont >= 8 || cont < 0)
                     cout<<"scelta non valida"<<endl;
-                else gio[cont] = to_string(cont);
+
+                if (cont > 0 && cont < 8)    
+                    gio[cont-1] = to_string(cont);
 
             }while(cont >= 8 || cont < 0);
             cont++;
-        }while(cont != 0);
+        }while(cont != 0 || cont > 7);
         cout<<endl;
 
         controllo(affitto, cat, gio);
