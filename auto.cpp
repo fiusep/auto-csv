@@ -7,26 +7,49 @@ struct automobile{
     string categoria, marca, modello, colore, giorni[7];
 };
 
-void controllo(automobile affitto[], string cat, string gio[])
+void controllo(automobile affitto[], string cat, string gio[], int c)
 {
-    int c = 0;
+    int x = 0;
 
     ifstream fin(file);
 
     while(!fin.eof())
     {
-        fin >> affitto[c].categoria;
-        fin >> affitto[c].marca;
-        fin >> affitto[c].modello;
-        fin >> affitto[c].colore;
+        getline (fin, affitto[x].categoria, ',');
+        cout<<affitto[x].categoria;
+        getline (fin, affitto[x].marca, ',');
+        cout<<affitto[x].marca;
+        getline (fin, affitto[x].modello, ',');
+        cout<<affitto[x].modello;
+        getline (fin, affitto[x].colore, ',');
+        cout<<affitto[x].colore;
 
-        for(int j = 0; j < 7; j++)
-            fin >> affitto[c].giorni[j];
+        for(int j = 0; j < 7; j++){
+                if(j == 6)
+                    getline (fin, affitto[x].giorni[j]);
+                else getline (fin, affitto[x].giorni[j], ',');
+            cout<<affitto[x].giorni[j];
+        }
+        x++;
+        cout<<endl;
     }
 
-    fin.close();
+    cout<<"le macchine che potrebbero interessarti sono: "<<endl;
 
+    for(int a = 0; a <= c; a++)
+    {
+        if (cat == affitto[a].categoria){
+            for(int g = 0; g < 7; g++){
+                if(gio[g] == to_string(g) && affitto[a].giorni[g] == "L"){
+                    affitto[a].giorni[g] = "A";
+                    }
+            }
+            cout<<a+1<<"> "<<affitto[a].marca<<" "<<affitto[a].modello<<" "<<affitto[a].colore<<endl;
+        }
+    }
+    cout<<endl;
 }
+
 
 int menu()
 {
@@ -65,15 +88,14 @@ int menu()
                 if(cont >= 8 || cont < 0)
                     cout<<"scelta non valida"<<endl;
 
-                if (cont > 0 && cont < 8)    
+                if (cont > 0 && cont < 8)
                     gio[cont-1] = to_string(cont);
 
             }while(cont >= 8 || cont < 0);
-            cont++;
-        }while(cont != 0 || cont > 7);
+        }while(cont != 0);
         cout<<endl;
 
-        controllo(affitto, cat, gio);
+        controllo(affitto, cat, gio, c);
     }
 }
 
