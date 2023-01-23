@@ -5,11 +5,12 @@ using namespace std;
 
 struct automobile{
     string categoria, marca, modello, colore, giorni[7];
+    string marcasc, modellosc, coloresc;
 };
 
 void controllo(automobile affitto[], string cat, string gio[], int c, int magg)
 {
-    int x = 0, scl;
+    int x = 0, sc = 0, scl, m = 0;;
 
     ifstream fin(file);
 
@@ -34,29 +35,63 @@ void controllo(automobile affitto[], string cat, string gio[], int c, int magg)
     cout<<"le macchine che potrebbero interessarti sono: "<<endl;
 
     bool check = false;
+    int contatore = 0;
 
     for(int a = 0; a <= c; a++)
     {
         if (cat == affitto[a].categoria){
             for(int g = 0; g < 7; g++){
                 if(gio[g] != "" && affitto[a].giorni[g] == " L"){
-                    affitto[a].giorni[g] = " A";
-                    check = true;
-                }
-                if (check == true && g == magg){
-                    cout<<a+1<<">"<<affitto[a].marca<<affitto[a].modello<<affitto[a].colore<<endl;
-                    check = false;
+                contatore++;
                 }
             }
+            if(contatore == magg)
+            check = true;
         }
+        if(check && contatore == magg)
+        {
+            cout<<sc+1<<">"<<affitto[a].marca<<affitto[a].modello<<affitto[a].colore<<endl;
+            affitto[sc].marcasc = affitto[a].marca;
+            affitto[sc].modellosc = affitto[a].modello;
+            affitto[sc].coloresc = affitto[a].colore;
+            check = false;
+            sc++;
+        }
+        contatore = 0;
     }
 
     cout<<"0> Nessuna di queste\n>> ";
     cin>>scl;
 
-    cout<<endl;
-}
+    if (scl != 0){
+        for (int j = 0; j < c; j++)
+              {
+                   if (affitto[scl-1].marcasc == affitto[j].marca && affitto[scl-1].modellosc == affitto[j].modello && affitto[scl-1].coloresc == affitto[j].colore)
+                   {
+                       for (int g = 0; g < 7; g++)
+                       {
+                           if(gio[g] != "" && affitto[j].giorni[g] == " L")
+                              affitto[j].giorni[g] = " A";
+                       }
+                   }
+              }
 
+    ofstream fout(file);
+    for(int q = 0; q < c-1; q++){
+        fout<<affitto[q].categoria<<","<<affitto[q].marca<<","<<affitto[q].modello<<","<<affitto[q].colore<<",";
+                for(int j = 0; j < 7; j++){
+                    if (j == 6)
+                        fout<<affitto[q].giorni[j];
+                    else fout<<affitto[q].giorni[j]<<",";
+                }
+        fout<<endl;
+        }
+
+    fout.close();
+
+    cout<<endl;
+    }
+}
 
 int menu()
 {
@@ -79,8 +114,12 @@ int menu()
         automobile affitto[c];
 
         do{
-        cout<<"scegli la categoria dell'auto che ti interessa: ";
+        cout<<"scegli la categoria dell'auto che ti interessa (0 per uscire): ";
         cin>>cat;
+            if (cat == "0"){
+                cout<<endl<<"Grazie, torni a trovarci!!"<<endl;
+                return 0;
+                }
         }while(cat != "utilitaria" && cat != "media" && cat != "lusso" && cat != "sportiva" && cat != "furgone");
 
         int cont, magg = 0;
