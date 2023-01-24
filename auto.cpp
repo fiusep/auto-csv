@@ -8,9 +8,9 @@ struct automobile{
     string marcasc, modellosc, coloresc;
 };
 
-void controllo(automobile affitto[], string cat, string gio[], int c, int magg)
+void controllo(automobile affitto[], string cat, string gio[], int c, int magg, int m)
 {
-    int x = 0, sc = 0, scl, m = 0;;
+    int x = 0, sc = 0, scl;
 
     ifstream fin(file);
 
@@ -41,30 +41,30 @@ void controllo(automobile affitto[], string cat, string gio[], int c, int magg)
     {
         if (cat == affitto[a].categoria){
             for(int g = 0; g < 7; g++){
-                if(gio[g] != "" && affitto[a].giorni[g] == " L"){
-                contatore++;
+                 if(gio[g] != "" && affitto[a].giorni[g] == " L"){
+                    contatore++;
+                    if (contatore == m && g == magg-1){
+                        check = true;
+                    }
+                }
+                if (check == true && g == magg-1){
+                    cout<<sc+1<<">"<<affitto[a].marca<<affitto[a].modello<<affitto[a].colore<<endl;
+                    affitto[sc].marcasc = affitto[a].marca;
+                    affitto[sc].modellosc = affitto[a].modello;
+                    affitto[sc].coloresc = affitto[a].colore;
+                    check = false;
+                    contatore = 0;
+                    sc++;
                 }
             }
-            if(contatore == magg)
-            check = true;
         }
-        if(check && contatore == magg)
-        {
-            cout<<sc+1<<">"<<affitto[a].marca<<affitto[a].modello<<affitto[a].colore<<endl;
-            affitto[sc].marcasc = affitto[a].marca;
-            affitto[sc].modellosc = affitto[a].modello;
-            affitto[sc].coloresc = affitto[a].colore;
-            check = false;
-            sc++;
-        }
-        contatore = 0;
     }
 
     cout<<"0> Nessuna di queste\n>> ";
     cin>>scl;
 
     if (scl != 0){
-        for (int j = 0; j < c; j++)
+        for (int j = 0; j <= c; j++)
               {
                    if (affitto[scl-1].marcasc == affitto[j].marca && affitto[scl-1].modellosc == affitto[j].modello && affitto[scl-1].coloresc == affitto[j].colore)
                    {
@@ -89,8 +89,10 @@ void controllo(automobile affitto[], string cat, string gio[], int c, int magg)
 
     fout.close();
 
-    cout<<endl;
+    cout<<endl<<"Complimenti! Il noleggio e' andato a buon fine!"<<endl<<endl;
     }
+
+    cout<<endl;
 }
 
 int menu()
@@ -99,7 +101,7 @@ int menu()
     {
         ifstream fin(file);
 
-        string appoge, cat, gio[7]; int c=0;
+        string appoge, cat, gio[7]; int c=0, m = 0;
         cout<<"-----------------------------------------------------"<<endl;
         while(!fin.eof())
         {
@@ -136,15 +138,17 @@ int menu()
 
                 if (cont > 0 && cont < 8){
                     gio[cont-1] = to_string(cont);
-                    if (cont > magg)
+                    m++;
+                    if (cont > magg){
                         magg = cont;
+                    }
                 }
 
             }while(cont >= 8 || cont < 0);
         }while(cont != 0);
         cout<<endl;
 
-        controllo(affitto, cat, gio, c, magg);
+        controllo(affitto, cat, gio, c, magg, m);
     }
 }
 
